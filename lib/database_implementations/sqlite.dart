@@ -8,7 +8,9 @@ class SQLiteDB extends DatabaseService {
   late Database db;
 
   @override
-  void initialize() async{
+  Future<void> initialize() async{
+
+    print("Initializing SQLiteDB");
     ///create database, create tables, insert preliminary rows
     // Get a location using getDatabasesPath
     var databasesPath = await getDatabasesPath();
@@ -28,11 +30,13 @@ class SQLiteDB extends DatabaseService {
 
         });
 
+    print("SQLite database created and row inserted");
     }
 
   @override
   Future<void> insert(String tableName, map) async {
     //TODO: wrap in a try block
+    print("SQLiteDB: inserting $map into $tableName");
     await db.insert(tableName, map);
   }
 
@@ -47,6 +51,7 @@ class SQLiteDB extends DatabaseService {
 
   @override
   Future<void> update(String tableName, map) async {
+    print("SQLiteDB: updating $map into $tableName");
     await db.update(tableName, map,
         ///ASSUMPTION: All tables will have a non null 'id' field that serves
         ///as their primary key

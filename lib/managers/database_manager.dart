@@ -5,15 +5,49 @@ import 'database_service.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class DatabaseManager {
+  static final DatabaseManager _instance = DatabaseManager._internal();
+
   late SupabaseDB supabaseDB;
   late SQLiteDB sqliteDB;
   late DatabaseService activeDB;
+
+  /// Private constructor
+  DatabaseManager._internal();
+
+  /// Factory constructor to access the singleton instance
+  factory DatabaseManager() {
+    return _instance;
+  }
+
+  Future<void> initialize(bool isPremium) async {
+    print("Initializing DatabaseManager");
+    ///create supabase and sqlite database service instances
+    ///set activeDB to correct value. Initialize chosen database
+
+    sqliteDB = SQLiteDB();
+    supabaseDB = SupabaseDB();
+    if(isPremium){
+      activeDB = supabaseDB;
+      ///initialize supabase
+
+    } else {
+      activeDB = sqliteDB;
+
+    }
+    await activeDB.initialize();
+
+
+  }
+
 
 
   ///only done once, when switch is done. Afterwards, it's just a matter of setting
   ///the activeDB. I think.
   void switchToOnline() async {
+    print("Switching to online DB---------------------");
+
     ///initialize supabase stuff
+    await supabaseDB.initialize();
 
     ///sign in to get user_id
     final response = await supabaseDB.supabase.auth.signInAnonymously();
@@ -26,6 +60,8 @@ class DatabaseManager {
     }
 
     final userId = response.user?.id;
+
+    print("user_id: $userId");
 
 
     ///change money's table user id to uuid
@@ -46,7 +82,8 @@ class DatabaseManager {
   }
 
   void switchToOffline() async {
-    ///ottoke...
+    print("Switching to offline DB---------------------");
+
     ///retrieve supabase data
     final data = await supabaseDB.supabase
         .from('money')
@@ -82,20 +119,5 @@ class DatabaseManager {
     activeDB.insert(tableName, map);
   }
 
-  DatabaseManager(bool isPremium){
-    ///create supabase and sqlite database service instances
-    ///set activeDB to correct value. Initialize chosen database
 
-    if(isPremium){
-      activeDB = supabaseDB;
-      ///initialize supabase
-
-    } else {
-      activeDB = sqliteDB;
-
-    }
-
-    activeDB.initialize();
-
-  }
 }

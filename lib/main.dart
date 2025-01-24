@@ -3,7 +3,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sample_premium_database_switch_supabase_sqlite/bloc/premium_bloc.dart';
 import 'package:sample_premium_database_switch_supabase_sqlite/managers/database_manager.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+
+  final DatabaseManager databaseManager = DatabaseManager();
+  await databaseManager.initialize(false);
 
 
   final PremiumBloc premiumBloc = PremiumBloc();
@@ -18,25 +23,24 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    ///such bad practice qaq
-    final DatabaseManager databaseManager = DatabaseManager(false);
+
+
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: MyHomePage(title: 'Flutter Demo Home Page', databaseManager: databaseManager,),
+      home: MyHomePage(title: 'Flutter Demo Home Page'),
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title, required this.databaseManager});
+  const MyHomePage({super.key, required this.title});
 
 
   final String title;
-  final DatabaseManager databaseManager;
 
   @override
   State<MyHomePage> createState() => _MyHomePageState();
@@ -44,18 +48,23 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   int _money = 0;
+  final DatabaseManager databaseManager = DatabaseManager();
+
   @override
-  void initState() async {
-    // TODO: implement initState
-    List temp = await widget.databaseManager.queryAll('money');
-    _money = temp[0]['amount'];
+  void initState() {
+    initialize();
+
     super.initState();
   }
 
+  Future<void> initialize() async {
+    List temp = await databaseManager.queryAll('money');
+    _money = temp[0]['amount'];
+  }
 
   void _incrementMoney() {
 
-    widget.databaseManager.update('money', {'user_id': 'nyehe', 'id': 1, 'amount': _money++});
+    databaseManager.update('money', {'user_id': 'nyehe', 'id': 1, 'amount': _money++});
     setState(() {
       _money;
     });

@@ -29,6 +29,7 @@ class PremiumBloc extends Bloc<PremiumEvent, PremiumState> {
 
     on<SetPremium>((event, emit) async {
       print('SETPREMIUM EVENT CALLED------------');
+
       emit(Premium());
 
     });

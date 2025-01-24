@@ -2,7 +2,7 @@
 abstract class DatabaseService
 {
 
-  void initialize();
+  Future<void> initialize();
 
 
   Future<List<Map<String, dynamic>>> queryAll(String tableName);

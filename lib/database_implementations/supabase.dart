@@ -21,6 +21,7 @@ class SupabaseDB extends DatabaseService {
 
   @override
   Future<void> insert(String tableName, map) async {
+    print("SupabaseDB: inserting $map into $tableName");
     // Insert a new row
     await supabase
         .from(tableName)
@@ -38,6 +39,7 @@ class SupabaseDB extends DatabaseService {
 
   @override
   Future<void> update(String tableName, map) async {
+    print("SupabaseDB: updating $map into $tableName");
     await supabase
         .from(tableName)
         .update(map)
