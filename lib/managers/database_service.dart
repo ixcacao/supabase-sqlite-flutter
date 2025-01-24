@@ -1,7 +1,7 @@
 
 abstract class DatabaseService
 {
-
+  ///should only be initialized once every app open
   Future<void> initialize();
 
 

@@ -6,31 +6,35 @@ import '../names.dart';
 
 class SQLiteDB extends DatabaseService {
   late Database db;
+  var isInitialized = false;
 
   @override
   Future<void> initialize() async{
+    if(!isInitialized){
+      print("Initializing SQLiteDB");
+      ///create database, create tables, insert preliminary rows
+      // Get a location using getDatabasesPath
+      var databasesPath = await getDatabasesPath();
+      String path = join(databasesPath, 'database.db');
 
-    print("Initializing SQLiteDB");
-    ///create database, create tables, insert preliminary rows
-    // Get a location using getDatabasesPath
-    var databasesPath = await getDatabasesPath();
-    String path = join(databasesPath, 'database.db');
 
-
-    db = await openDatabase(path, version: 1,
-        onCreate: (Database db, int version) async {
-          await db.execute('''
+      db = await openDatabase(path, version: 1,
+          onCreate: (Database db, int version) async {
+            await db.execute('''
           create table $money ( 
             $columnId integer primary key autoincrement, 
             $columnUserId text not null,
             $columnAmount integer not null)
           ''');
 
-          await db.insert(money, {columnId: 1, columnUserId: 'eh', columnAmount: 0});
+            await db.insert(money, {columnId: 1, columnUserId: 'eh', columnAmount: 0});
 
-        });
+          });
 
-    print("SQLite database created and row inserted");
+      print("SQLite database created and row inserted");
+      isInitialized = true;
+    } else{print("SqliteDB: already initialized");}
+
     }
 
   @override

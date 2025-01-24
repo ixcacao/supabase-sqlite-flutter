@@ -8,14 +8,22 @@ class SupabaseDB extends DatabaseService {
   String SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImthZmVldGltZXdkeGdlbXFza3R4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Mzc2NDA0MDEsImV4cCI6MjA1MzIxNjQwMX0.ESamwDyG6a17cXrdnDrOfxoWpA8-_i0W4kNCuWin3_A';
 
   late final supabase;
+  var isInitialized = false;
 
   @override
   Future<void> initialize() async {
-    await Supabase.initialize(
-      url: SUPABASE_URL,
-      anonKey: SUPABASE_ANON_KEY,
-    );
-    supabase = Supabase.instance.client;
+    if(!isInitialized){
+      await Supabase.initialize(
+        url: SUPABASE_URL,
+        anonKey: SUPABASE_ANON_KEY,
+      );
+      supabase = Supabase.instance.client;
+
+      isInitialized = true;
+    }
+    else{print("SupabaseDB: already initialized");}
+
+
 
   }
 

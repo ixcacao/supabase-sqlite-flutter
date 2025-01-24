@@ -63,8 +63,9 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   void _incrementMoney() {
-
-    databaseManager.update('money', {'user_id': 'nyehe', 'id': 1, 'amount': _money++});
+    _money = _money+1;
+    ///When updating, you don't have to include the complete map. Only the needed columns
+    databaseManager.update('money', {'id': 1, 'amount': _money});
     setState(() {
       _money;
     });

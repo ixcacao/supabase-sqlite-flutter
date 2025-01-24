@@ -52,12 +52,7 @@ class DatabaseManager {
     ///sign in to get user_id
     final response = await supabaseDB.supabase.auth.signInAnonymously();
 
-    ///if may error, throw exception
-    if(response.error != null){
-      throw Exception(
-        'error w anonymous sign in: ${response.error?.message}'
-      );
-    }
+    //TODO:: wrap in try block
 
     final userId = response.user?.id;
 
@@ -82,6 +77,7 @@ class DatabaseManager {
   }
 
   void switchToOffline() async {
+    ///TODO::: need bang i-initialize tong sqliteDB?
     print("Switching to offline DB---------------------");
 
     ///retrieve supabase data
@@ -104,7 +100,7 @@ class DatabaseManager {
     /// set activeDB to sqlite
     activeDB = sqliteDB;
 
-    ///TODO:: there should be a delete data from
+    ///TODO:: there should be a delete data from supabase
   }
 
 
